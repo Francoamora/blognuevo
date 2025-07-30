@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 🔐 SEGURIDAD
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'morita_23')
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['.pythonanywhere.com']
 
 # 📦 APPS INSTALADAS
 INSTALLED_APPS = [
@@ -61,7 +61,7 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),  # Asegura que sea string
     }
 }
 
@@ -80,10 +80,9 @@ USE_TZ = True
 # 🧾 ARCHIVOS ESTÁTICOS Y MEDIA
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATIC_ROOT = '/home/Francomora23/blognuevo/staticfiles'  # RUTA ABSOLUTA
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = '/home/Francomora23/blognuevo/media'  # RUTA ABSOLUTA
 
 # ✍️ CKEDITOR CONFIG
 CKEDITOR_UPLOAD_PATH = 'uploads/'
@@ -122,7 +121,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'elblogdevideojuegos2025@gmail.com'  # ⚠️ Usá tu correo real
-EMAIL_HOST_PASSWORD = 'rtqc qwpb wfzb hijf'  # ⚠️ Usá contraseña de aplicación si tenés 2FA
+EMAIL_HOST_USER = 'elblogdevideojuegos2025@gmail.com'
+EMAIL_HOST_PASSWORD = 'rtqc qwpb wfzb hijf'
 EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = 'Blog de Videojuegos <elblogdevideojuegos2025@gmail.com>'
