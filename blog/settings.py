@@ -77,11 +77,11 @@ TIME_ZONE = 'America/Argentina/Buenos_Aires'
 USE_I18N = True
 USE_TZ = True
 
-# 🧾 ARCHIVOS ESTÁTICOS
+# 🧾 ARCHIVOS ESTÁTICOS Y MEDIA
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# 🖼️ ARCHIVOS MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
