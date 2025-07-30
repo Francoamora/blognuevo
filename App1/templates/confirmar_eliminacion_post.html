@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow rounded-4 p-4 mx-auto" style="max-width: 500px;">
+    <h3 class="mb-4 text-danger text-center">¿Estás seguro de que querés eliminar esta publicación?</h3>
+    <p class="text-center"><strong>{{ post.titulo }}</strong></p>
+
+    <form method="post" class="d-flex justify-content-between mt-4">
+      {% csrf_token %}
+      <a href="{% url 'detalle_post' post.id %}" class="btn btn-secondary rounded-pill px-4">Cancelar</a>
+      <button type="submit" class="btn btn-danger rounded-pill px-4">Eliminar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
