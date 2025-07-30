@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block titulo %}Blog de Videojuegos{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Trix / CKEditor -->
+  <link rel="stylesheet" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+  <script src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="blog-title py-3 text-center bg-dark text-light mb-4">
+    <h1 class="m-0">
+      <a href="{% url 'inicio' %}" class="text-light text-decoration-none">
+        🎮 Blog de Videojuegos
+      </a>
+    </h1>
+  </header>
+
+  {# Navbar por defecto; puede omitirse en plantillas específicas #}
+  {% block navbar %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item mx-3">
+            <a class="nav-link{% if request.resolver_match.url_name == 'inicio' %} active{% endif %}"
+               href="{% url 'inicio' %}">Inicio</a>
+          </li>
+          <li class="nav-item mx-3">
+            <a class="nav-link{% if request.path == '/categoria/Noticias/' %} active{% endif %}"
+               href="{% url 'posts_por_categoria' 'Noticias' %}">Noticias</a>
+          </li>
+          <li class="nav-item mx-3">
+            <a class="nav-link{% if request.path == '/categoria/Artículos/' %} active{% endif %}"
+               href="{% url 'posts_por_categoria' 'Artículos' %}">Artículos</a>
+          </li>
+          <li class="nav-item mx-3">
+            <a class="nav-link{% if request.path == '/categoria/Análisis/' %} active{% endif %}"
+               href="{% url 'posts_por_categoria' 'Análisis' %}">Análisis</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="{% url 'perfil_usuario' %}">
+                <i class="bi bi-person-circle"></i> {{ user.username }}
+              </a>
+            </li>
+            {% if user.is_staff %}
+              <li class="nav-item mx-2">
+                <a class="nav-link" href="{% url 'crear_post' %}">
+                  <i class="bi bi-plus-circle"></i> Publicar
+                </a>
+              </li>
+            {% endif %}
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="#" onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+              </a>
+              <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
+                {% csrf_token %}
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% endblock %}
+
+  <!-- Mensajes flash -->
+  <div class="container mt-4">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="container mb-5">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer py-3 bg-dark text-center text-light">
+    <div class="container">
+      &copy; {{ now|date:"Y" }} Blog de Videojuegos | Creado por Grupo 1
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

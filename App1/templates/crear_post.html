@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Crear publicación - Blog de Videojuegos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm p-4 bg-dark text-light rounded">
+    <h2 class="mb-4 text-center">📝 Crear nueva publicación</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="{{ form.titulo.id_for_label }}" class="form-label">Título</label>
+        {{ form.titulo }}
+        {% for err in form.titulo.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría</label>
+        {{ form.categoria }}
+        {% for err in form.categoria.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Contenido</label>
+        {{ form.contenido }}  {# HiddenInput #}
+        <trix-editor input="{{ form.contenido.id_for_label }}" class="bg-light text-dark p-2 rounded"></trix-editor>
+        {% for err in form.contenido.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.tags.id_for_label }}" class="form-label">Etiquetas</label>
+        {{ form.tags }}
+        <small class="form-text text-muted">Separá las etiquetas con comas (ej: acción, aventura)</small>
+        {% for err in form.tags.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen destacada</label>
+        {{ form.imagen }}
+        {% for err in form.imagen.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_imagenes" class="form-label">Galería de imágenes (opcional)</label>
+        <input type="file" name="imagenes" id="id_imagenes" class="form-control" multiple>
+      </div>
+
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-success btn-lg">
+          <i class="bi bi-upload"></i> Publicar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

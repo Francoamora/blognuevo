@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+  <div class="container mt-5">
+    <h3>¿Estás seguro de que querés eliminar esta publicación?</h3>
+    <p><strong>{{ post.titulo }}</strong></p>
+
+    <form method="post">
+      {% csrf_token %}
+      <a href="{% url 'detalle_post' post.id %}" class="btn btn-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+  </div>
+{% endblock %}

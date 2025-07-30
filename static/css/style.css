@@ -1,0 +1,195 @@
+/* ─ Paleta y tipografía ───────────────────────────────────────────────── */
+:root {
+  --bg-dark: #121212;
+  --bg-darker: #0d0d0d;
+  --text-light: #e0e0e0;
+  --text-muted: #aaa;
+  --primary: #0066cc;
+  --primary-hover: #0055aa;
+  --accent: #00bfff;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* ─ Header & Footer ────────────────────────────────────────────────────── */
+header.blog-title {
+  background-color: var(--bg-darker);
+  padding: 1rem 0;
+}
+header.blog-title h1 a {
+  color: var(--text-light);
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+footer.footer {
+  background-color: var(--bg-darker);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ─ Navbar ─────────────────────────────────────────────────────────────── */
+.navbar {
+  background-color: var(--bg-darker);
+}
+.navbar .nav-link {
+  color: var(--text-light) !important;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  transition: color 0.2s;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--primary) !important;
+}
+
+/* ─ Botones ───────────────────────────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+.btn-outline-light {
+  color: var(--text-light);
+  border-color: var(--text-light);
+}
+.btn-outline-light:hover {
+  background-color: var(--text-light);
+  color: var(--bg-dark);
+}
+
+/* ─ Tarjetas (cards) ─────────────────────────────────────────────────── */
+.card {
+  background-color: var(--bg-darker);
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+}
+.card-img-top {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  object-fit: cover;
+}
+
+/* ─ Formularios ──────────────────────────────────────────────────────── */
+.form-control,
+.form-select {
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  border: 1px solid #333;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: none;
+}
+
+/* ─ Paginación ───────────────────────────────────────────────────────── */
+.pagination .page-link {
+  color: var(--text-light);
+  background-color: var(--bg-darker);
+  border: none;
+  margin: 0 0.25rem;
+}
+.pagination .page-item.active .page-link {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+/* ─ Comentarios ───────────────────────────────────────────────────────── */
+.comentario {
+  background-color: #1a1a1a;
+  color: var(--text-light);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+.comentario strong {
+  color: var(--accent);
+}
+.comentario small {
+  color: var(--text-muted);
+}
+
+/* ─ Carrusel ─────────────────────────────────────────────────────────── */
+.carousel-item img {
+  max-height: 400px;
+  object-fit: cover;
+}
+
+/* ─ Editor Trix/CKEditor ─────────────────────────────────────────────── */
+.trix-content,
+.ck-editor__editable_inline {
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+/* ─ Enlaces y acentos ─────────────────────────────────────────────────── */
+a {
+  color: var(--accent);
+}
+a:hover {
+  color: var(--primary);
+}
+
+/* ─ Barra de acento ───────────────────────────────────────────────────── */
+.accent-bar {
+  height: 4px;
+  width: 80px;
+  background-color: var(--primary);
+  border-radius: 2px;
+}
+
+/* ─ Responsivo ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card .card-body {
+    padding: 0.75rem;
+  }
+}
+
+/* ─── Ajuste de contraste ───────────────────────────────────────────────── */
+
+/* Textos claros sobre fondos oscuros */
+.bg-dark,
+.bg-darker,
+.card,
+header.blog-title,
+nav.navbar,
+footer.footer {
+  color: var(--text-light) !important;
+}
+
+/* Textos oscuros sobre fondos claros (white / light) */
+.bg-white,
+.alert,
+.card.bg-white,
+.container .alert-info {
+  color: #212529 !important;
+}
+
+/* Aseguramos que los enlaces en fondos claros mantengan legibilidad */
+.bg-white a,
+.alert a,
+.card.bg-white a {
+  color: var(--primary) !important;
+}
+
+/* ── Meta-texto de fecha/autor en cards ───────────────────────────────── */
+.card .card-text.small.text-muted {
+  color: var(--text-light) !important;
+}

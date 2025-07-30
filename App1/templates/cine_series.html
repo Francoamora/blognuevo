@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Cine & Series – Blog de Videojuegos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4 text-center text-light">🎬 Cine & Series Gamer</h1>
+
+  {% if posts %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for post in posts %}
+        <div class="col">
+          <div class="card h-100 bg-dark text-light shadow-sm">
+            {% if post.imagen %}
+              <a href="{% url 'detalle_post' post.id %}">
+                <img src="{{ post.imagen.url }}"
+                     class="card-img-top"
+                     style="height:180px; object-fit:cover;"
+                     alt="{{ post.titulo }}">
+              </a>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ post.titulo }}</h5>
+              <p class="card-text small text-muted mb-2">
+                📅 {{ post.fecha_creacion|date:"d/m/Y" }}
+              </p>
+              <p class="card-text mb-3">
+                {{ post.contenido|striptags|truncatechars:100 }}
+              </p>
+              <a href="{% url 'detalle_post' post.id %}"
+                 class="mt-auto btn btn-sm btn-primary">
+                Leer más
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {# Paginación #}
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if posts.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ posts.previous_page_number }}">« Anterior</a>
+          </li>
+        {% endif %}
+        {% for i in posts.paginator.page_range %}
+          <li class="page-item {% if posts.number == i %}active{% endif %}">
+            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          </li>
+        {% endfor %}
+        {% if posts.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ posts.next_page_number }}">Siguiente »</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% else %}
+    <p class="text-center text-light fst-italic">
+      No hay contenido de Cine & Series por el momento.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.titulo }} – Blog de Videojuegos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+  {# Carrusel de imágenes: imagen destacada + galería #}
+  {% if post.imagen or post.galeria.all %}
+  <div id="postCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner rounded shadow-lg">
+      {% if post.imagen %}
+      <div class="carousel-item active">
+        <img src="{{ post.imagen.url }}"
+             class="d-block w-100"
+             style="max-height: 500px; object-fit: cover;"
+             alt="Imagen destacada de {{ post.titulo }}">
+      </div>
+      {% endif %}
+      {% for imagen in post.galeria.all %}
+      <div class="carousel-item {% if not post.imagen and forloop.first %}active{% endif %}">
+        <img src="{{ imagen.imagen.url }}"
+             class="d-block w-100"
+             style="max-height: 500px; object-fit: cover;"
+             alt="Imagen adicional de {{ post.titulo }}">
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button"
+            data-bs-target="#postCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button"
+            data-bs-target="#postCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+  {% endif %}
+
+  {# Tags #}
+  {% if post.tags.all %}
+  <div class="mb-4 text-center">
+    {% for tag in post.tags.all %}
+      <a href="{% url 'posts_por_tag' tag.nombre %}"
+         class="badge bg-info text-dark mx-1 py-2 px-3 rounded-pill">
+        {{ tag.nombre }}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# Información de publicación #}
+  <p class="text-center text-light small mb-5">
+    Publicado por <strong>{{ post.autor.username }}</strong>
+    el {{ post.fecha_creacion|date:"d/m/Y H:i" }}
+    {% if post.categoria %}| Categoría:
+      <a href="{% url 'posts_por_categoria' post.categoria.nombre %}" class="link-info">
+        {{ post.categoria.nombre }}
+      </a>
+    {% endif %}
+    | Comentarios: {{ comentarios.count }}
+  </p>
+
+  {# Contenido principal #}
+  <div class="bg-dark text-light p-4 rounded mb-5 contenido">
+    {{ post.contenido|safe }}
+  </div>
+
+  {# Acciones de editar/eliminar #}
+  {% if user.is_staff or user == post.autor %}
+  <div class="d-flex justify-content-center mb-5">
+    <a href="{% url 'editar_post' post.id %}" class="btn btn-warning me-3">
+      <i class="bi bi-pencil-square"></i> Editar
+    </a>
+    <a href="{% url 'confirmar_eliminacion_post' post.id %}" class="btn btn-danger">
+      <i class="bi bi-trash"></i> Eliminar
+    </a>
+  </div>
+  {% endif %}
+
+  <hr class="border-secondary">
+
+  {# Comentarios centrados en burbujas #}
+  <h4 class="text-light mt-4 mb-3 text-center">💬 Comentarios ({{ comentarios.count }})</h4>
+  {% for comentario in comentarios %}
+  <div class="comment-bubble mx-auto mb-3">
+    <div class="d-flex justify-content-between mb-2">
+      <strong>{{ comentario.autor.username }}</strong>
+      <small class="text-muted">{{ comentario.fecha_creacion|date:"d/m/Y H:i" }}</small>
+    </div>
+    <p class="mb-0">{{ comentario.contenido }}</p>
+  </div>
+  {% empty %}
+  <p class="text-warning text-center">🕸️ No hay comentarios aún. ¡Sé el primero en opinar!</p>
+  {% endfor %}
+
+  {# Formulario de comentario #}
+  {% if user.is_authenticated %}
+  <div class="comment-form mt-4">
+    <h5 class="text-light mb-3 text-center">✍️ Agregar un comentario:</h5>
+    <form method="post" class="bg-dark p-4 rounded mx-auto" style="max-width:700px;">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.contenido.label_tag }}
+        <div class="django-ckeditor-widget">
+          {{ form.contenido }}
+        </div>
+        {% for err in form.contenido.errors %}
+        <div class="text-danger small">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-chat-left-text"></i> Comentar
+        </button>
+      </div>
+    </form>
+  </div>
+  {% else %}
+  <div class="alert alert-info mt-4 text-center">
+    <i class="bi bi-info-circle"></i>
+    <a href="{% url 'login' %}" class="link-info">Iniciá sesión</a> para comentar.
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
