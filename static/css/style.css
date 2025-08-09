@@ -182,7 +182,7 @@ footer.footer {
   color: #212529 !important;
 }
 
-/* Aseguramos que los enlaces en fondos claros mantengan legibilidad */
+/*fondos claros mantengan legibilidad */
 .bg-white a,
 .alert a,
 .card.bg-white a {
