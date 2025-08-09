@@ -32,9 +32,10 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Contenido</label>
-        {{ form.contenido }}  {# HiddenInput #}
-        <trix-editor input="{{ form.contenido.id_for_label }}" class="bg-light text-dark p-2 rounded"></trix-editor>
+        <label for="id_contenido" class="form-label">Contenido</label>
+        <!-- Input oculto explícito, sin |safe ni HTML sin escapar -->
+        <input type="hidden" id="id_contenido" name="contenido" value="{{ form.initial.contenido|default_if_none:''|escape }}">
+        <trix-editor input="id_contenido" class="bg-light text-dark p-2 rounded"></trix-editor>
         {% for err in form.contenido.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
       </div>
 
