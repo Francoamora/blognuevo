@@ -13,16 +13,12 @@ from .forms import PostForm, ComentarioForm, CustomUserCreationForm
 
 def inicio(request):
     categoria_id = request.GET.get('categoria')
-    fecha        = request.GET.get('fecha')
-    busqueda     = request.GET.get('q')
-    ordenar      = request.GET.get('orden')
-    page         = request.GET.get('page')
+    fecha = request.GET.get('fecha')
+    busqueda = request.GET.get('q')
+    ordenar = request.GET.get('orden')
+    page = request.GET.get('page')
 
-    posts = (
-        Post.objects
-            .annotate(num_comentarios=Count('comentario'))
-            .filter(publicado=True)
-    )
+    posts = Post.objects.annotate(num_comentarios=Count('comentario')).filter(publicado=True)
 
     if categoria_id and categoria_id.isdigit():
         posts = posts.filter(categoria__id=int(categoria_id))
@@ -43,11 +39,11 @@ def inicio(request):
     elif ordenar == 'fecha':
         posts = posts.order_by('-fecha_creacion')
 
-    categorias      = Categoria.objects.all()
+    categorias = Categoria.objects.all()
     tags_destacados = Tag.objects.annotate(total=Count('post')).order_by('-total')[:10]
 
     paginator = Paginator(posts, 6)
-    pagina    = paginator.get_page(page)
+    pagina = paginator.get_page(page)
 
     return render(request, 'inicio.html', {
         'posts': pagina,
@@ -57,17 +53,17 @@ def inicio(request):
 
 
 def detalle_post(request, post_id):
-    post        = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     comentarios = Comentario.objects.filter(post=post).order_by('-fecha_creacion')
-    imagenes    = ImagenPost.objects.filter(post=post)
+    imagenes = ImagenPost.objects.filter(post=post)
 
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = ComentarioForm(request.POST)
             if form.is_valid():
-                nuevo_comentario                = form.save(commit=False)
-                nuevo_comentario.post           = post
-                nuevo_comentario.autor          = request.user
+                nuevo_comentario = form.save(commit=False)
+                nuevo_comentario.post = post
+                nuevo_comentario.autor = request.user
                 nuevo_comentario.fecha_creacion = timezone.now()
                 nuevo_comentario.save()
                 messages.success(request, "Comentario agregado correctamente.")
@@ -93,7 +89,7 @@ def crear_post(request):
         return redirect('inicio')
 
     if request.method == 'POST':
-        form     = PostForm(request.POST, request.FILES)
+        form = PostForm(request.POST, request.FILES)
         imagenes = request.FILES.getlist('imagenes')
 
         if form.is_valid():
@@ -103,21 +99,15 @@ def crear_post(request):
                 return render(request, 'crear_post.html', {'form': form})
 
             try:
-                # 1) Creamos la instancia sin guardar M2M
                 nuevo_post = form.save(commit=False)
-                # 2) Asignamos autor ANTES de guardar (evita NOT NULL constraint)
                 nuevo_post.autor = request.user
-                # fecha_creacion es auto_now_add; si querés forzarlo:
                 if not nuevo_post.fecha_creacion:
                     nuevo_post.fecha_creacion = timezone.now()
-                # 3) Guardamos la instancia
                 nuevo_post.save()
 
-                # 4) Procesamos tags con el propio form (limpia y agrega M2M)
                 form.instance = nuevo_post
                 form.save(commit=True)
 
-                # 5) Guardamos imágenes adicionales (galería)
                 for imagen in imagenes:
                     if hasattr(imagen, 'content_type') and 'image' in imagen.content_type:
                         ImagenPost.objects.create(post=nuevo_post, imagen=imagen)
@@ -145,7 +135,6 @@ def editar_post(request, post_id):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            # El save() del form maneja tags; la instancia ya tiene autor
             post = form.save(commit=True)
             messages.success(request, "Publicación actualizada correctamente.")
             return redirect('detalle_post', post_id=post.id)
@@ -193,12 +182,11 @@ def perfil_usuario(request):
 
 
 def posts_por_categoria(request, categoria_nombre):
-    categoria       = get_object_or_404(Categoria, nombre=categoria_nombre)
-    posts           = Post.objects.filter(categoria=categoria, publicado=True).order_by('-fecha_creacion')
-    paginator       = Paginator(posts, 6)
+    categoria = get_object_or_404(Categoria, nombre=categoria_nombre)
+    posts = Post.objects.filter(categoria=categoria, publicado=True).order_by('-fecha_creacion')
+    paginator = Paginator(posts, 6)
     posts_paginados = paginator.get_page(request.GET.get('page'))
 
-    # Top 5 últimas noticias
     ultimos_posts = Post.objects.filter(publicado=True).order_by('-fecha_creacion')[:5]
 
     return render(request, 'posts_por_categoria.html', {
@@ -209,21 +197,13 @@ def posts_por_categoria(request, categoria_nombre):
 
 
 def posts_por_tag(request, tag_nombre):
-    """
-    Evita MultipleObjectsReturned uniendo duplicados case-insensitive.
-    Muestra todos los posts asociados a cualquiera de los duplicados.
-    """
     tags = Tag.objects.filter(nombre__iexact=tag_nombre).order_by('id')
     if not tags.exists():
         raise Http404("La etiqueta no existe.")
 
-    posts_qs = (
-        Post.objects.filter(tags__in=tags, publicado=True)
-        .order_by('-fecha_creacion')
-        .distinct()
-    )
+    posts_qs = Post.objects.filter(tags__in=tags, publicado=True).order_by('-fecha_creacion').distinct()
 
-    paginator       = Paginator(posts_qs, 6)
+    paginator = Paginator(posts_qs, 6)
     posts_paginados = paginator.get_page(request.GET.get('page'))
 
     tag_canonico = tags.first()
