@@ -6,7 +6,8 @@
 <div class="container mt-5">
 
   {# Carrusel de imágenes: imagen destacada + galería #}
-  {% if post.imagen or post.galeria.all %}
+  {% with total_galeria=post.galeria.count %}
+  {% if post.imagen or total_galeria %}
   <div id="postCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
     <div class="carousel-inner rounded shadow-lg">
       {% if post.imagen %}
@@ -26,23 +27,24 @@
       </div>
       {% endfor %}
     </div>
-    <button class="carousel-control-prev" type="button"
-            data-bs-target="#postCarousel" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>
+      <span class="visually-hidden">Anterior</span>
     </button>
-    <button class="carousel-control-next" type="button"
-            data-bs-target="#postCarousel" data-bs-slide="next">
+    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
       <span class="carousel-control-next-icon"></span>
+      <span class="visually-hidden">Siguiente</span>
     </button>
   </div>
   {% endif %}
+  {% endwith %}
 
   {# Tags #}
   {% if post.tags.all %}
   <div class="mb-4 text-center">
     {% for tag in post.tags.all %}
       <a href="{% url 'posts_por_tag' tag.nombre %}"
-         class="badge bg-info text-dark mx-1 py-2 px-3 rounded-pill">
+         class="badge bg-info text-dark mx-1 py-2 px-3 rounded-pill text-decoration-none">
         {{ tag.nombre }}
       </a>
     {% endfor %}
@@ -80,7 +82,7 @@
 
   <hr class="border-secondary">
 
-  {# Comentarios centrados en burbujas #}
+  {# Comentarios #}
   <h4 class="text-light mt-4 mb-3 text-center">💬 Comentarios ({{ comentarios.count }})</h4>
   {% for comentario in comentarios %}
   <div class="comment-bubble mx-auto mb-3">
@@ -102,11 +104,9 @@
       {% csrf_token %}
       <div class="mb-3">
         {{ form.contenido.label_tag }}
-        <div class="django-ckeditor-widget">
-          {{ form.contenido }}
-        </div>
+        {{ form.contenido }}
         {% for err in form.contenido.errors %}
-        <div class="text-danger small">{{ err }}</div>
+          <div class="text-danger small">{{ err }}</div>
         {% endfor %}
       </div>
       <div class="d-grid">
