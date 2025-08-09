@@ -22,7 +22,8 @@
 
       <div class="mb-3">
         <label for="id_contenido" class="form-label">Contenido</label>
-        <input type="hidden" id="id_contenido" name="contenido" value="{{ form.initial.contenido|safe }}">
+        <!-- IMPORTANTE: escapar el HTML para no romper el atributo -->
+        <input type="hidden" id="id_contenido" name="contenido" value="{{ form.initial.contenido|default_if_none:''|escape }}">
         <trix-editor input="id_contenido" class="bg-light text-dark p-2 rounded"></trix-editor>
       </div>
 
@@ -39,7 +40,7 @@
         {% if post.imagen %}
           <div class="mt-2">
             <strong>Imagen actual:</strong><br>
-            <img src="{{ post.imagen.url }}" class="img-fluid rounded mt-2" style="max-height: 200px;">
+            <img src="{{ post.imagen.url }}" class="img-fluid rounded mt-2" style="max-height: 200px;" alt="Imagen actual">
           </div>
         {% endif %}
       </div>
