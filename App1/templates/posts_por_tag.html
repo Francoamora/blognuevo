@@ -24,10 +24,7 @@
           {% endif %}
           <div class="card-body d-flex flex-column p-3">
             <h5 class="card-title">
-              <a
-                href="{% url 'detalle_post' post.id %}"
-                class="text-light text-decoration-none"
-              >
+              <a href="{% url 'detalle_post' post.id %}" class="text-light text-decoration-none">
                 {{ post.titulo }}
               </a>
             </h5>
@@ -39,14 +36,12 @@
             <p class="card-text mb-3">
               {{ post.contenido|striptags|truncatechars:150 }}
             </p>
-            {% if post.tags.exists %}
+
+            {% if post.tags.all %}
             <div class="mt-auto">
               <p class="mb-0"><strong>Etiquetas:</strong>
                 {% for t in post.tags.all %}
-                  <a
-                    href="{% url 'posts_por_tag' t.nombre %}"
-                    class="badge bg-secondary text-decoration-none me-1"
-                  >
+                  <a href="{% url 'posts_por_tag' t.nombre %}" class="badge bg-secondary text-decoration-none me-1">
                     {{ t.nombre }}
                   </a>
                 {% endfor %}
@@ -59,7 +54,6 @@
       {% endfor %}
     </div>
 
-    <!-- Paginación -->
     {% if posts.has_other_pages %}
     <nav class="mt-4">
       <ul class="pagination justify-content-center">

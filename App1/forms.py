@@ -60,24 +60,45 @@ class PostForm(forms.ModelForm):
                 [tag.nombre for tag in self.instance.tags.all()]
             )
 
-    def save(self, commit=True):
-        # Parseamos las etiquetas en texto
-        tags_str = self.cleaned_data.get('tags', '')
-        tags_list = [nombre.strip() for nombre in tags_str.split(',') if nombre.strip()]
+    @staticmethod
+    def _normalize_tag_name(nombre: str) -> str:
+        """
+        Normaliza el nombre de la etiqueta: recorta espacios,
+        colapsa espacios internos y capitaliza palabras.
+        Mantiene acentos (útil en español).
+        """
+        base = ' '.join(nombre.strip().split())
+        # Capitaliza cada palabra (no tocamos acentos)
+        return base.title()
 
-        # Obtenemos la instancia sin guardar m2m aún
+    def save(self, commit=True):
+        # Parseo y normalización de etiquetas en texto
+        tags_str = self.cleaned_data.get('tags', '')
+        raw_list = [x for x in (t.strip() for t in tags_str.split(',')) if x]
+
+        norm_list = []
+        for nombre in raw_list:
+            norm = self._normalize_tag_name(nombre)
+            # Permitimos letras, números, espacios, guiones y # (por si usás hashtags)
+            # Si querés más restrictivo, ajustar este filtro.
+            if not all(ch.isalnum() or ch in " -#" for ch in norm):
+                continue
+            norm_list.append(norm)
+
+        # Obtenemos la instancia del Post sin guardar m2m aún
         instance = super().save(commit=False)
         instance.contenido = self.cleaned_data.get('contenido', '')
 
         if commit:
-            # Guardamos el Post para que obtenga un ID
-            instance.save()
-            # Ahora sí podemos gestionar la relación many-to-many
+            instance.save()  # garantiza ID
+            # Gestionamos relación M2M evitando duplicados (case-insensitive)
             instance.tags.clear()
-            for nombre in tags_list:
-                if not nombre.replace(' ', '').isalpha():
-                    continue
-                tag, _ = Tag.objects.get_or_create(nombre=nombre)
+            for nombre in norm_list:
+                existente = Tag.objects.filter(nombre__iexact=nombre).first()
+                if existente:
+                    tag = existente
+                else:
+                    tag = Tag.objects.create(nombre=nombre)
                 instance.tags.add(tag)
 
         return instance
