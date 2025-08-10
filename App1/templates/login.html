@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
-{% load bootstrap_filters %} {# filtro add_class para inputs (propio) #}
+{% load bootstrap_filters %}
 
 {% block titulo %}Iniciar sesión - Blog de Videojuegos{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 520px;">
   <div class="card shadow-sm p-4 bg-dark text-light rounded">
-    <h2 class="mb-4 text-center">Iniciar sesión</h2>
+    <h2 class="mb-4 text-center"><i class="bi bi-box-arrow-in-right"></i> Iniciar sesión</h2>
 
     <form method="post" novalidate>
       {% csrf_token %}
 
-      {# Non-field errors (credenciales inválidas, etc.) #}
       {% if form.non_field_errors %}
         <div class="alert alert-danger">
           {% for err in form.non_field_errors %}{{ err }}{% endfor %}
@@ -35,11 +34,13 @@
       </div>
 
       <div class="d-grid mt-3">
-        <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-door-open"></i> Entrar</button>
       </div>
 
-      <div class="text-center mt-3">
+      <div class="text-center mt-3 d-flex justify-content-center gap-3">
         <a href="{% url 'password_reset' %}" class="link-info">¿Olvidaste tu contraseña?</a>
+        <span class="text-muted">|</span>
+        <a href="{% url 'registro' %}" class="link-info">Crear cuenta</a>
       </div>
     </form>
   </div>
