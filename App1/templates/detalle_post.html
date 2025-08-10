@@ -5,7 +5,6 @@
 {% block content %}
 <div class="container mt-5">
 
-  {# Carrusel de imágenes: imagen destacada + galería #}
   {% with total_galeria=post.galeria.count %}
   {% if post.imagen or total_galeria %}
   <div id="postCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
@@ -13,7 +12,7 @@
       {% if post.imagen %}
       <div class="carousel-item active">
         <img src="{{ post.imagen.url }}"
-             class="d-block w-100"
+             class="d-block w-100 img-contain-lg"
              style="max-height: 500px; object-fit: cover;"
              alt="Imagen destacada de {{ post.titulo }}">
       </div>
@@ -21,7 +20,7 @@
       {% for imagen in post.galeria.all %}
       <div class="carousel-item {% if not post.imagen and forloop.first %}active{% endif %}">
         <img src="{{ imagen.imagen.url }}"
-             class="d-block w-100"
+             class="d-block w-100 img-contain-lg"
              style="max-height: 500px; object-fit: cover;"
              alt="Imagen adicional de {{ post.titulo }}">
       </div>
@@ -39,7 +38,6 @@
   {% endif %}
   {% endwith %}
 
-  {# Tags #}
   {% if post.tags.all %}
   <div class="mb-4 text-center">
     {% for tag in post.tags.all %}
@@ -51,7 +49,6 @@
   </div>
   {% endif %}
 
-  {# Información de publicación #}
   <p class="text-center text-light small mb-5">
     Publicado por <strong>{{ post.autor.username }}</strong>
     el {{ post.fecha_creacion|date:"d/m/Y H:i" }}
@@ -63,12 +60,10 @@
     | Comentarios: {{ comentarios.count }}
   </p>
 
-  {# Contenido principal #}
   <div class="bg-dark text-light p-4 rounded mb-5 contenido">
     {{ post.contenido|safe }}
   </div>
 
-  {# Acciones de editar/eliminar #}
   {% if user.is_staff or user == post.autor %}
   <div class="d-flex justify-content-center mb-5">
     <a href="{% url 'editar_post' post.id %}" class="btn btn-warning me-3">
@@ -82,7 +77,6 @@
 
   <hr class="border-secondary">
 
-  {# Comentarios #}
   <h4 class="text-light mt-4 mb-3 text-center">💬 Comentarios ({{ comentarios.count }})</h4>
   {% for comentario in comentarios %}
   <div class="comment-bubble mx-auto mb-3">
@@ -96,7 +90,6 @@
   <p class="text-warning text-center">🕸️ No hay comentarios aún. ¡Sé el primero en opinar!</p>
   {% endfor %}
 
-  {# Formulario de comentario #}
   {% if user.is_authenticated %}
   <div class="comment-form mt-4">
     <h5 class="text-light mb-3 text-center">✍️ Agregar un comentario:</h5>
