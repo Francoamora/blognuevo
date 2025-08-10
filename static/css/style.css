@@ -14,9 +14,11 @@ body {
   color: var(--text-light);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─ Header & Footer ────────────────────────────────────────────────────── */
+/* ─ Header & Footer ───────────────────────────────────────────────────── */
 header.blog-title {
   background-color: var(--bg-darker);
   padding: 1rem 0;
@@ -33,7 +35,7 @@ footer.footer {
   font-size: 0.9rem;
 }
 
-/* ─ Navbar ─────────────────────────────────────────────────────────────── */
+/* ─ Navbar ────────────────────────────────────────────────────────────── */
 .navbar {
   background-color: var(--bg-darker);
 }
@@ -65,6 +67,30 @@ footer.footer {
   color: var(--bg-dark);
 }
 
+/* ─ Utilidades de texto y clamp ───────────────────────────────────────── */
+.u-break {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.u-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.u-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.u-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* ─ Tarjetas (cards) ─────────────────────────────────────────────────── */
 .card {
   background-color: var(--bg-darker);
@@ -72,15 +98,67 @@ footer.footer {
   border-radius: 0.75rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.7);
 }
+
+/* Imagen superior cuadrada y recortada */
 .card-img-top {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
   object-fit: cover;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* fuerza cuadrado */
+}
+
+/* Cuerpo de la card como columna flexible */
+.card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título y extracto con clamp para que no rompan el layout */
+.card .card-title {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.card .card-title,
+.card .card-title a {
+  color: var(--text-light);
+  text-decoration: none;
+}
+.card .card-title.u-clamp-2,
+.card .card-title a.u-clamp-2 { /* por si aplicás clase en <a> */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card .card-excerpt {
+  color: var(--text-light);
+  opacity: 0.9;
+}
+.card .card-excerpt.u-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Meta de autor/fecha más legible */
+.card .card-text.small.text-muted {
+  color: var(--text-light) !important;
+  opacity: 0.7;
+}
+
+/* Zona de tags al pie de la card */
+.card .tags {
+  margin-top: auto;
 }
 
 /* ─ Formularios ──────────────────────────────────────────────────────── */
@@ -127,6 +205,7 @@ footer.footer {
 .carousel-item img {
   max-height: 400px;
   object-fit: cover;
+  width: 100%;
 }
 
 /* ─ Editor Trix/CKEditor ─────────────────────────────────────────────── */
@@ -139,7 +218,7 @@ footer.footer {
   min-height: 200px;
 }
 
-/* ─ Enlaces y acentos ─────────────────────────────────────────────────── */
+/* ─ Enlaces y acentos ────────────────────────────────────────────────── */
 a {
   color: var(--accent);
 }
@@ -147,7 +226,7 @@ a:hover {
   color: var(--primary);
 }
 
-/* ─ Barra de acento ───────────────────────────────────────────────────── */
+/* ─ Barra de acento ──────────────────────────────────────────────────── */
 .accent-bar {
   height: 4px;
   width: 80px;
@@ -155,16 +234,31 @@ a:hover {
   border-radius: 2px;
 }
 
-/* ─ Responsivo ────────────────────────────────────────────────────────── */
+/* ─ Grids estables para listados/perfil ──────────────────────────────── */
+.grid-stable {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+.grid-stable > .col-12 { grid-column: span 12; }
+.grid-stable > .col-6  { grid-column: span 6; }
+.grid-stable > .col-4  { grid-column: span 4; }
+
+@media (max-width: 992px) {
+  .grid-stable > .col-4 { grid-column: span 6; }
+}
 @media (max-width: 768px) {
-  .card .card-body {
-    padding: 0.75rem;
-  }
+  .grid-stable > .col-6,
+  .grid-stable > .col-4 { grid-column: span 12; }
+  .card .card-body { padding: 0.75rem; }
 }
 
-/* ─── Ajuste de contraste ───────────────────────────────────────────────── */
+/* ─ Responsivo ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card .card-body { padding: 0.75rem; }
+}
 
-/* Textos claros sobre fondos oscuros */
+/* ─ Ajuste de contraste ──────────────────────────────────────────────── */
 .bg-dark,
 .bg-darker,
 .card,
@@ -174,22 +268,42 @@ footer.footer {
   color: var(--text-light) !important;
 }
 
-/* Textos oscuros sobre fondos claros (white / light) */
+/* Fondos claros correctamente legibles */
 .bg-white,
 .alert,
 .card.bg-white,
 .container .alert-info {
   color: #212529 !important;
 }
-
-/*fondos claros mantengan legibilidad */
 .bg-white a,
 .alert a,
 .card.bg-white a {
   color: var(--primary) !important;
 }
 
-/* ── Meta-texto de fecha/autor en cards ───────────────────────────────── */
-.card .card-text.small.text-muted {
-  color: var(--text-light) !important;
+/* ─ Palabras larguísimas que rompen layout ───────────────────────────── */
+.card,
+.card .card-body,
+.card .card-text,
+.card .card-title,
+.card .card-excerpt,
+h1, h2, h3, h4, h5, p {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* === MODO CONTAIN PARA IMÁGENES EN CARDS Y CARRUSEL === */
+.img-contain {
+  object-fit: contain !important;     /* ignora el cover inline */
+  aspect-ratio: auto !important;      /* libera proporción */
+  max-height: 260px;                   /* alto homogéneo de cards */
+  width: 100%;
+  background-color: var(--bg-darker);  /* “letterbox” prolijo */
+}
+
+.img-contain-lg {
+  object-fit: contain !important;
+  max-height: 500px;
+  width: 100%;
+  background-color: var(--bg-darker);
 }

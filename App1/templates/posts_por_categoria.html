@@ -15,22 +15,33 @@
       <div class="row g-4">
         {% for post in posts %}
         <div class="col-md-6">
-          <div class="card h-100">
+          <div class="card h-100 bg-dark text-light border-0">
             {% if post.imagen %}
-            <img src="{{ post.imagen.url }}"
-                 class="card-img-top"
-                 style="height:180px; object-fit:cover;"
-                 alt="{{ post.titulo }}">
+              <a href="{% url 'detalle_post' post.id %}">
+                <img
+                  src="{{ post.imagen.url }}"
+                  class="card-img-top img-fluid img-contain"
+                  style="aspect-ratio:1/1; object-fit:cover;"
+                  alt="{{ post.titulo }}"
+                >
+              </a>
             {% endif %}
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ post.titulo }}</h5>
+              <h5 class="card-title u-clamp-2 u-break">
+                <a href="{% url 'detalle_post' post.id %}" class="text-light text-decoration-none">
+                  {{ post.titulo }}
+                </a>
+              </h5>
+
               <p class="card-text small text-muted mb-2">
                 {{ post.fecha_creacion|date:"d/m/Y" }}
                 {% if post.autor %} • {{ post.autor.username }}{% endif %}
               </p>
-              <p class="card-text mb-3">
-                {{ post.contenido|striptags|truncatechars:120 }}
+
+              <p class="card-excerpt u-clamp-3 u-break mb-3">
+                {{ post.contenido|striptags|truncatechars:160 }}
               </p>
+
               <a href="{% url 'detalle_post' post.id %}" class="mt-auto btn btn-sm btn-primary">
                 Leer más
               </a>
@@ -41,6 +52,7 @@
       </div>
 
       <!-- Paginación -->
+      {% if posts.has_other_pages %}
       <nav class="mt-4">
         <ul class="pagination justify-content-center">
           {% if posts.has_previous %}
@@ -60,17 +72,17 @@
           {% endif %}
         </ul>
       </nav>
+      {% endif %}
     </div>
 
-    <!-- Sidebar Top 5 Noticias -->
+    <!-- Sidebar Top 5 Noticias -->
     <aside class="col-lg-4 mt-4 mt-lg-0">
       <div class="bg-white text-dark border rounded shadow-sm p-3 mb-4">
-        <h5 class="mb-3">🔝 Top 5 Noticias</h5>
+        <h5 class="mb-3">🔝 Top 5 Noticias</h5>
         <ul class="list-unstyled mb-0">
           {% for ult in ultimos_posts %}
           <li class="mb-2">
-            <a href="{% url 'detalle_post' ult.id %}"
-               class="text-dark text-decoration-none">
+            <a href="{% url 'detalle_post' ult.id %}" class="text-dark text-decoration-none">
               • {{ ult.titulo|truncatechars:40 }}
             </a><br>
             <small class="text-muted">{{ ult.fecha_creacion|date:"d/m/Y" }}</small>
